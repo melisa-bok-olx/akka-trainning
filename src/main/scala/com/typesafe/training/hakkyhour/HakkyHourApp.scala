@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Typesafe, Inc. All rights reserved.
+ * Copyright �� 2014 Typesafe, Inc. All rights reserved.
  */
 
 package com.typesafe.training.hakkyhour
@@ -9,6 +9,9 @@ import akka.event.Logging
 import scala.annotation.tailrec
 import scala.collection.breakOut
 import scala.io.StdIn
+import akka.actor.Props
+import akka.actor.ActorLogging
+import akka.actor.Actor
 
 object HakkyHourApp {
 
@@ -35,6 +38,7 @@ object HakkyHourApp {
 class HakkyHourApp(system: ActorSystem) extends Terminal {
 
   val log = Logging(system, getClass.getName)
+  val maxDrinkCount: Int = system.settings.config.getInt("hakky-hour.max-drink-count")
 
   val hakkyHour = createHakkyHour()
 
@@ -45,7 +49,7 @@ class HakkyHourApp(system: ActorSystem) extends Terminal {
   }
 
   def createHakkyHour(): ActorRef =
-    system.deadLetters // TODO Create a HakkyHour top-level actor named "hakky-hour"
+    system.actorOf(HakkyHour.props(maxDrinkCount), "hakky-hour")
 
   @tailrec
   final def commandLoop(): Unit =
@@ -64,7 +68,7 @@ class HakkyHourApp(system: ActorSystem) extends Terminal {
     }
 
   def createGuest(count: Int, drink: Drink, isStubborn: Boolean, maxDrinkCount: Int): Unit =
-    () // TODO Send CreateGuest to HakkyHour count number of times
+    for (_ <- 1 to count) hakkyHour ! HakkyHour.CreateGuest(drink)
 
   def getStatus(): Unit =
     () // TODO Ask HakkyHour for the status and log the result on completion

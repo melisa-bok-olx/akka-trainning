@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Typesafe, Inc. All rights reserved.
+5 * Copyright �� 2014 Typesafe, Inc. All rights reserved.
  */
 
 package com.typesafe.training.hakkyhour

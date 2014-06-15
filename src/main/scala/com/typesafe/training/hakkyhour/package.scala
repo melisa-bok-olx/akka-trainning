@@ -27,8 +27,10 @@ package object hakkyhour {
   /**
    * Keeps the CPU busy for the given appoximate duration.
    */
-  def busy(duration: FiniteDuration): Unit =
+  def busy(duration: FiniteDuration): Unit = {
+    println("busy duration: " + duration)
     pi(duration.toMillis * busyScalingFactor)
+  }
 
   /**
    * Determines a reasonable value for the [[com.typesafe.training.hakkyhour.busyScalingFactor]].
