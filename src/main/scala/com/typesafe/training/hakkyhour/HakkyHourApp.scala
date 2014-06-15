@@ -68,7 +68,7 @@ class HakkyHourApp(system: ActorSystem) extends Terminal {
     }
 
   def createGuest(count: Int, drink: Drink, isStubborn: Boolean, maxDrinkCount: Int): Unit =
-    for (_ <- 1 to count) hakkyHour ! HakkyHour.CreateGuest(drink)
+    for (_ <- 1 to count) hakkyHour ! HakkyHour.CreateGuest(drink, isStubborn, maxDrinkCount)
 
   def getStatus(): Unit =
     () // TODO Ask HakkyHour for the status and log the result on completion

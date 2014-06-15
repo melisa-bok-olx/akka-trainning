@@ -5,23 +5,29 @@ import akka.actor.Actor
 import akka.actor.ActorRef
 import akka.actor.Props
 import akka.actor.ActorLogging
+import scala.util.Random
 
 object Barkeeper {
   case class PrepareDrink(drink: Drink, guest: ActorRef)
   case class DrinkPrepared(drink: Drink, guest: ActorRef)
 
-  def props(prepareDrinkDuration: FiniteDuration): Props = Props(new Barkeeper(prepareDrinkDuration))
+  def props(prepareDrinkDuration: FiniteDuration, accuracy: Int): Props = Props(new Barkeeper(prepareDrinkDuration, accuracy))
 }
 
-class Barkeeper(prepareDrinkDuration: FiniteDuration) extends Actor with ActorLogging {
+class Barkeeper(prepareDrinkDuration: FiniteDuration, accuracy: Int) extends Actor with ActorLogging {
   log.debug("barkeeper duration: " + prepareDrinkDuration)
   import Barkeeper._
 
   override def receive: Receive = {
 
-    case PrepareDrink(drink, guest) => {
+    case PrepareDrink(desiredDrink, guest) => {
+      val preparedDrink =
+        if (Random.nextInt(100) < accuracy) desiredDrink
+        else Drink.anyOther(desiredDrink)
+
       busy(prepareDrinkDuration)
-      sender() ! DrinkPrepared(drink, guest)
+      sender() ! DrinkPrepared(preparedDrink, guest)
+
     }
   }
 
